@@ -134,13 +134,29 @@ export async function getEmployees(token, id = null) {
 }
 
 
-
+//Felhasználók törlése admin oldalon, adminokat is, lehet törölni!
 export async function deleteEmployee(employeeId, token) {
-    return fetch(`http://localhost:5000/api/Dolgozo/${employeeId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
+    try {
+        const response = await fetch(`https://localhost:7032/api/Admin/delete-employee/${employeeId}`, {
+            method: 'DELETE',
+            headers: { 
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json' // Biztosítsd, hogy a tartalomtípus meg van adva
+            }
+        });
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(`Hiba: ${errorMessage}`);
+        }
+
+        return response; // Visszaadjuk a választ, hogy a frontend tudja, hogy sikerült a törlés
+    } catch (error) {
+        console.error("Hiba a dolgozó törlésekor:", error.message);
+        throw error;
+    }
 }
+
 
 
 //Dolgozók hozzáadása ADMIN által.

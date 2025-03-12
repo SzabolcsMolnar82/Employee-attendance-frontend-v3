@@ -62,17 +62,17 @@
     //Elvileg ezzel frissül a Dolgozók lista, de nekem nem működik...
     async function handleAddEmployee() {
     try {
-        // 🔥 API hívás - új dolgozó hozzáadása
+        //API hívás - új dolgozó hozzáadása
         await addEmployee(newEmployee, token);
         message = "Dolgozó sikeresen hozzáadva!";
 
-        // 🔥 Frissítjük az employees tömböt az API-ból, hogy Svelte érzékelje a változást
+        //Frissítjük az employees tömböt az API-ból, hogy Svelte érzékelje a változást
         employees = await getEmployees(token);
 
-        // 🔥 Kényszerített reaktivitás
+        //Kényszerített reaktivitás
         employees = [...employees];  
 
-        // 🔥 Input mezők ürítése
+        //Input mezők ürítése
         newEmployee = { Nev: '', FelhasznaloNev: '', Jelszo: '' };
     } catch (error) {
         message = `Hiba: ${error.message}`;
@@ -97,10 +97,16 @@
     }
     */
 
+
     async function handleDeleteEmployee(id) {
+    try {
         await deleteEmployee(id, token);
-        employees = await getEmployees(token);
+        employees = await getEmployees(token); // Frissítjük a dolgozók listáját
+    } catch (error) {
+        console.error("Törlési hiba:", error);
     }
+}
+
 </script>
 
 
