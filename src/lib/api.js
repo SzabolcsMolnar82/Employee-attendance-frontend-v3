@@ -3,6 +3,9 @@ import { authStore } from "./authStore.js";
 
 
 export async function login(username, password) {
+    
+    //console.log("Bejelentkezési próbálkozás:", username, password);
+
     const response = await fetch('https://localhost:7032/api/Auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -30,6 +33,13 @@ export async function login(username, password) {
 
     //console.log("Bejelentkezési adatok:", { token, isAdmin });
 
+    // Adminok az admin felületre mennek, dolgozók a dashboardra
+    if (isAdmin) {
+        window.location.href = "/admin";
+    } else {
+        window.location.href = "/dashboard";
+    
+    }
     return { token, isAdmin };
 }
 
@@ -131,24 +141,11 @@ export async function getMonthlyAttendance(params) {
     
 }
 
-/*
 
-export async function getAttendance(userId, token) {
-    const response = await fetch(`http://localhost:5000/api/Attendance/user/${userId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    return response.json();
+//Ez a függvény törli a localStorage-ból a JWT tokent és az admin státuszt, majd visszairányítja a főoldalra.
+export function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('isAdmin');
+    authStore.set({ user: null, token: null, isAdmin: false });
+    window.location.href = "/";
 }
-
-*/
-
-/*
-
-export async function getMonthlyAttendance(userId, token) {
-    const response = await fetch(`http://localhost:5000/api/HaviMunka/user/${userId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    return response.json();
-}
-
-*/

@@ -1,6 +1,6 @@
 <script>
     import { onMount } from 'svelte';
-    import { getEmployees, deleteEmployee, addEmployee } from '../../lib/api.js';
+    import { getEmployees, deleteEmployee, addEmployee, logout } from '../../lib/api.js';
     import { authStore } from '../../lib/authStore.js';
 
     let employees = [];
@@ -49,6 +49,7 @@
         }
     }
 
+    //Dolgozók törlése, ADMIN
     async function handleDeleteEmployee(id) {
     try {
         await deleteEmployee(id, token);
@@ -58,12 +59,18 @@
     }
 }
 
+function handleLogout() {
+        logout();
+    }
+
 </script>
 
 
 
 <main>
     <h1>Admin Felület</h1>
+    <button on:click={handleLogout}>Kijelentkezés</button>
+
     <h2>Dolgozók Listája</h2>
     <ul>
         {#each employees as emp}
