@@ -19,6 +19,8 @@ export async function login(username, password) {
 
     const data = await response.json();
     const token = data.token || data.Token;
+    const dolgozoId = data.dolgozoId;
+    const nev = data.nev;
     const isAdmin = Boolean(data.isAdmin);  //Boolean formátumba konvertálás
 
     if (!token) {
@@ -26,13 +28,15 @@ export async function login(username, password) {
     }
 
     if (typeof window !== "undefined") {
+        localStorage.setItem('dolgozoId', dolgozoId.toString()); //a toString lehet hogy nem kell majd!
         localStorage.setItem('user', JSON.stringify(username));
+        localStorage.setItem('nev', nev);
         localStorage.setItem('token', token);
         localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
     }
    
     authStore.set({ user: username, token, isAdmin });
-    console.log("✅ Bejelentkezés sikeres! User:", username);
+    console.log("✅ Bejelentkezés sikeres! User:", username, dolgozoId, nev, isAdmin);
 
 
 

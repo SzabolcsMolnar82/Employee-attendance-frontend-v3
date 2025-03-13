@@ -5,12 +5,15 @@ import { writable } from 'svelte/store';
 const isBrowser = typeof window !== "undefined";
 
 // Ellenőrizzük, hogy van-e már elmentett token és felhasználónév
-
+const storedUserId = isBrowser ? localStorage.getItem('dolgozoId') : null;
+const storedNev = isBrowser ? localStorage.getItem('nev') : null; 
 const storedUser = isBrowser ? localStorage.getItem('user') : null;
 const storedToken = isBrowser ? localStorage.getItem('token') : null;
 const storedIsAdmin = isBrowser ? localStorage.getItem('isAdmin') : null;
 
 export const authStore = writable({
+    userId: storedUserId ? parseInt(storedUserId) : null,
+    nev: storedNev || null, 
     user: storedUser ? JSON.parse(storedUser) : null,
     token: storedToken || null,
     isAdmin: storedIsAdmin ? JSON.parse(storedIsAdmin) : false
@@ -18,6 +21,8 @@ export const authStore = writable({
 
 // Kijelentkezési függvény
 export function logout() {
+    localStorage.removeItem('dolgozoId');
+    localStorage.removeItem('nev'); 
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     localStorage.removeItem('isAdmin');

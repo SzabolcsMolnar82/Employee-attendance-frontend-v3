@@ -4,6 +4,7 @@
     import { authStore } from '../../lib/authStore.js';
 
     let userId = null;
+    let nev = null;
     let token = null;
     let attendance = [];
     let monthlyAttendance = [];
@@ -12,8 +13,9 @@
     onMount(async () => {
 
         if (typeof window === "undefined") return; // Ha SSR módban fut, ne csináljon semmit
-        authStore.subscribe(({ user, token: authToken }) => {
+        authStore.subscribe(({ user, nev:storedNev, token: authToken }) => {
             userId = user;
+            nev = storedNev;
             token = authToken;
             console.log("🔹 Beállított userId:", userId);
         });
@@ -77,6 +79,7 @@
 
 <main>
     <h1>Dolgozói Dashboard</h1>
+    <h1>Üdvözöljük, {nev}!</h1>
     <p>{message}</p>
 
     <h2>Napi jelenlét</h2>
