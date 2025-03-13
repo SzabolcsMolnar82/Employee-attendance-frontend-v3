@@ -125,12 +125,47 @@ export async function addEmployee(employeeData, token) {
 
 
 
-export async function checkIn(params) {
-    
+// Check-in függvény (belépés rögzítése)
+export async function checkIn(dolgozoId, token) {
+    console.log("🔹 Check-in próbálkozás:", dolgozoId);
+
+    const response = await fetch(`https://localhost:7032/api/Attendance/check-in?dolgozoId=${dolgozoId}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    const data = await response.json();
+    console.log("✅ Check-in válasz:", data);
+
+    if (!response.ok) {
+        throw new Error(`❌ Hiba a check-in során: ${data.Message}`);
+    }
+
+    return data;
 }
 
-export async function checkOut(params) {
-    
+export async function checkOut(dolgozoId, token) {
+    console.log("🔹 Check-out próbálkozás:", dolgozoId);
+
+    const response = await fetch(`https://localhost:7032/api/Attendance/check-out?dolgozoId=${dolgozoId}`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    });
+
+    const data = await response.json();
+    console.log("✅ Check-out válasz:", data);
+
+    if (!response.ok) {
+        throw new Error(`❌ Hiba a check-out során: ${data.Message}`);
+    }
+
+    return data;
 }
 
 export async function getAttendance(params) {
