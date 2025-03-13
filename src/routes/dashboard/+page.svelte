@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import { checkIn, checkOut, getAttendance, getMonthlyAttendance } from '../../lib/api.js';
-    import { authStore } from '../../lib/authStore.js';
+    import { authStore, logout } from '../../lib/authStore.js';
 
     let userId = null;
     let nev = null;
@@ -98,4 +98,6 @@
             <li>{entry.Datum}: {entry.LedolgozottIdoPerc} perc</li>
         {/each}
     </ul>
+
+    <button on:click={logout} style="margin-top: 20px; background-color: grey; color: white;">Kijelentkezés</button>
 </main>

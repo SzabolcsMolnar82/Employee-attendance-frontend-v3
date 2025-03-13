@@ -69,7 +69,7 @@ function handleLogout() {
 
 <main>
     <h1>Admin Felület</h1>
-    <button on:click={handleLogout}>Kijelentkezés</button>
+    
 
     <h2>Dolgozók Listája</h2>
     <ul>
@@ -83,4 +83,6 @@ function handleLogout() {
     <input type="text" placeholder="Felhasználónév" bind:value={newEmployee.FelhasznaloNev} required />
     <input type="password" placeholder="Jelszó" bind:value={newEmployee.Jelszo} required />
     <button on:click={handleAddEmployee}>Hozzáadás</button>
+
+    <button on:click={handleLogout}>Kijelentkezés</button>
 </main>

@@ -21,13 +21,18 @@ export const authStore = writable({
 
 // Kijelentkezési függvény
 export function logout() {
+    if (!isBrowser) return;
+
     localStorage.removeItem('dolgozoId');
     localStorage.removeItem('nev'); 
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     localStorage.removeItem('isAdmin');
 
-    authStore.set({ user: null, token: null, isAdmin: false });
+    authStore.set({ userId: null, nev: null, user: null, token: null, isAdmin: false });
+
+    //Átirányít a főoldalra
+    window.location.href = "/";
 }
 
 
