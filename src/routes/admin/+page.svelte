@@ -34,15 +34,6 @@
         });
 
 
-    /*
-    onMount(async () => {
-        authStore.subscribe(({ token: authToken }) => token = authToken);
-        employees = await getEmployees(token);
-    });
-    */
-
-
-
     //Dolgozók hozzáadása ADMIN által.
     async function handleAddEmployee() {
         try {
@@ -58,46 +49,6 @@
         }
     }
 
-    /*
-    //Elvileg ezzel frissül a Dolgozók lista, de nekem nem működik...
-    async function handleAddEmployee() {
-    try {
-        //API hívás - új dolgozó hozzáadása
-        await addEmployee(newEmployee, token);
-        message = "Dolgozó sikeresen hozzáadva!";
-
-        //Frissítjük az employees tömböt az API-ból, hogy Svelte érzékelje a változást
-        employees = await getEmployees(token);
-
-        //Kényszerített reaktivitás
-        employees = [...employees];  
-
-        //Input mezők ürítése
-        newEmployee = { Nev: '', FelhasznaloNev: '', Jelszo: '' };
-    } catch (error) {
-        message = `Hiba: ${error.message}`;
-    }
-    */
-
-    /*
-    async function handleAddEmployee() {
-        try {
-            const token = localStorage.getItem('token'); // Az admin bejelentkezésnél elmentett token
-            const employeeData = {
-                Nev: name,
-                FelhasznaloNev: username,
-                Jelszo: password
-            };
-
-            const result = await addEmployee(employeeData, token);
-            message = "Dolgozó sikeresen hozzáadva!";
-        } catch (error) {
-            message = `Hiba: ${error.message}`;
-        }
-    }
-    */
-
-
     async function handleDeleteEmployee(id) {
     try {
         await deleteEmployee(id, token);
@@ -108,8 +59,6 @@
 }
 
 </script>
-
-
 
 
 

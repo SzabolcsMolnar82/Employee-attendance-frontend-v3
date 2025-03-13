@@ -33,77 +33,10 @@ export async function login(username, password) {
     return { token, isAdmin };
 }
 
-
 /*
-export async function login(username, password) {
-    const response = await fetch('https://localhost:7032/api/Auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ FelhasznaloNev: username, Jelszo: password })
-    });
-
-    if (!response.ok) {
-        throw new Error('Bejelentkezési hiba');
-    }
-
-    const data = await response.json();
-    const token = data.token || data.Token;
-    const isAdmin = Boolean(data.isAdmin);
-    //const isAdmin = data.isAdmin || false;
-
-    if (!token) {
-        throw new Error("Nem kaptunk JWT tokent!");
-    }
-
-    localStorage.setItem('token', token);  // Token mentése
-
-
-    localStorage.setItem('isAdmin', JSON.stringify(isAdmin))
-    //localStorage.setItem('isAdmin', isAdmin); 
-
-
-
     //Ha null vagy undefined, akkor a login válasz nem adja vissza az admin státuszt!
     console.log(localStorage.getItem('isAdmin'));
     return {token, isAdmin};
-}
-    */
-/*Ez nem menti a tokent!
-export async function login(username, password) {
-    const response = await fetch('https://localhost:7032/api/Auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ FelhasznaloNev: username, Jelszo: password })
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        const tokenPayload = JSON.parse(atob(data.token.split('.')[1]));
-        const isAdmin = tokenPayload.role === 'Admin';
-        return { user: username, token: data.token, isAdmin };
-    }
-    return null;
-}
-    */
-/*
-export async function checkIn(userId, token) {
-    return fetch(`http://localhost:5000/api/Attendance/check-in?dolgozoId=${userId}`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-}
-
-
-*/
-
-/*
-export async function checkOut(userId, token) {
-    return fetch(`http://localhost:5000/api/Attendance/check-out?dolgozoId=${userId}`, {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-}
-
 */
 
 export async function getEmployees(token, id = null) {
@@ -156,7 +89,6 @@ export async function deleteEmployee(employeeId, token) {
         throw error;
     }
 }
-
 
 
 //Dolgozók hozzáadása ADMIN által.
