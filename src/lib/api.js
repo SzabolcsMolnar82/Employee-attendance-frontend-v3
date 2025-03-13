@@ -13,7 +13,8 @@ export async function login(username, password) {
     });
 
     if (!response.ok) {
-        throw new Error('Bejelentkezési hiba');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Bejelentkezési hiba');
     }
 
     const data = await response.json();
@@ -24,14 +25,16 @@ export async function login(username, password) {
         throw new Error("Nem kaptunk JWT tokent!");
     }
 
-    //Token és isAdmin mentése a localStorage-be
-    localStorage.setItem('token', token);
-    localStorage.setItem('isAdmin', JSON.stringify(isAdmin)); 
-
-    //Az authStore frissítése
+    if (typeof window !== "undefined") {
+        localStorage.setItem('user', JSON.stringify(username));
+        localStorage.setItem('token', token);
+        localStorage.setItem('isAdmin', JSON.stringify(isAdmin));
+    }
+   
     authStore.set({ user: username, token, isAdmin });
+    console.log("✅ Bejelentkezés sikeres! User:", username);
 
-    //console.log("Bejelentkezési adatok:", { token, isAdmin });
+
 
     // Adminok az admin felületre mennek, dolgozók a dashboardra
     if (isAdmin) {
@@ -43,17 +46,10 @@ export async function login(username, password) {
     return { token, isAdmin };
 }
 
-/*
-    //Ha null vagy undefined, akkor a login válasz nem adja vissza az admin státuszt!
-    console.log(localStorage.getItem('isAdmin'));
-    return {token, isAdmin};
-*/
-
 export async function getEmployees(token, id = null) {
 
     //console.log(localStorage.getItem('token'));
     // Ha null vagy undefined az értéke, akkor a bejelentkezés után nincs elmentve a token!
-
 
     let url = 'https://localhost:7032/api/Admin/get-employees';
     if (id !== null) {

@@ -23,12 +23,12 @@
         });
 
         if (!token) {
-            console.error("Token hiányzik! Visszairányítása        bejelentkezési oldalra.");
+            console.error("Token hiányzik! Visszairányítás a bejelentkezési oldalra.");
             window.location.href = "/";
             return;
         }
     
-        console.log("Token az admin oldalon:", token); //Ellenőrzés        konzolon
+        console.log("Token az admin oldalon:", token); //Ellenőrzés konzolon
         employees = await getEmployees(token);
 
         });
