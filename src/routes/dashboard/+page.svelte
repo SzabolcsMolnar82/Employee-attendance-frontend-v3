@@ -9,12 +9,14 @@
     let attendance = [];
     let monthlyAttendance = [];
     let message = "";
+    let isWorking = false;
+    let elapsedSeconds = 0;
+    let interval;
 
     onMount(async () => {
-
-        if (typeof window === "undefined") return; // Ha SSR módban fut, ne csináljon semmit
-        authStore.subscribe(({ user, nev:storedNev, token: authToken }) => {
-            userId = user;
+        if (typeof window === "undefined") return;
+        authStore.subscribe(({ userId: storedUserId, nev: storedNev, token: authToken }) => {
+            userId = storedUserId ? parseInt(storedUserId) : null; // Átalakítás számmá
             nev = storedNev;
             token = authToken;
             console.log("🔹 Beállított userId:", userId);
@@ -27,13 +29,9 @@
         }
 
         try {
-            console.log("🔹 Napi jelenlét lekérése...");
-            attendance = await getAttendance(userId, token);
-            console.log("✅ Napi jelenlét adatok:", attendance);
-
-            console.log("🔹 Havi jelenlét lekérése...");
-            monthlyAttendance = await getMonthlyAttendance(userId, token);
-            console.log("✅ Havi jelenlét adatok:", monthlyAttendance);
+            attendance = (await getAttendance(userId, token)) || [];
+            monthlyAttendance = (await getMonthlyAttendance(userId, token)) || { days: [], totalDaysWorked: 0 };
+            
         } catch (error) {
             console.error("❌ Hiba az adatok lekérésekor:", error.message);
             message = "Hiba történt az adatok betöltésekor!";
@@ -41,37 +39,64 @@
     });
 
     async function handleCheckIn() {
-        if (!userId) {
-            console.error("❌ Hiba: userId nem elérhető a check-in során!");
-            message = "Hiba: Dolgozó azonosító nem található!";
+        if (!userId || isNaN(userId)) {
+            message = "Hiba: Dolgozó azonosító nem található vagy érvénytelen!";
             return;
         }
 
-        console.log("🔹 Check-in próbálkozás userId:", userId);
         try {
             message = await checkIn(userId, token);
-            attendance = await getAttendance(userId, token);
-            console.log("✅ Check-in sikeres:", message);
+            isWorking = true;
+            elapsedSeconds = 0;
+            interval = setInterval(() => elapsedSeconds++, 1000);
+            attendance = (await getAttendance(userId, token)) || [];
         } catch (error) {
-            console.error("❌ Hiba a check-in során:", error.message);
             message = error.message;
         }
     }
 
     async function handleCheckOut() {
-        if (!userId) {
-            console.error("❌ Hiba: userId nem elérhető a check-out során!");
-            message = "Hiba: Dolgozó azonosító nem található!";
+        if (!userId || isNaN(userId)) {
+            message = "Hiba: Dolgozó azonosító nem található vagy érvénytelen!";
             return;
         }
 
-        console.log("🔹 Check-out próbálkozás userId:", userId);
+        if (!Array.isArray(attendance)) {
+            message = "Hiba: A napi jelenlét adatok nincsenek megfelelően betöltve!";
+            return;
+        }
+
+        console.log("🔍 Jelenlegi attendance tömb:", attendance);
+
+        if (attendance.length === 0) {
+            console.log("🔄 Attendance üres, újratöltés...");
+            attendance = (await getAttendance(userId, token)) || [];
+            console.log("✅ Újratöltött attendance:", attendance);
+        }
+
+        const activeShift = attendance.find(entry => entry && !entry.KilepesIdo);
+        
+        if (!activeShift) {
+            message = "Hiba: Nincs aktív műszak!";
+            console.warn("⚠️ Nincs aktív műszak az attendance tömbben!");
+            return;
+        }
+
         try {
-            message = await checkOut(userId, token);
-            attendance = await getAttendance(userId, token);
-            console.log("✅ Check-out sikeres:", message);
+            console.log("🔹 Check-out próbálkozás:", userId);
+            const response = await checkOut(userId, token);
+            console.log("✅ Check-out API válasz:", response);
+
+            message = response?.Message || "Sikeres kijelentkezés!";
+            isWorking = false;
+            clearInterval(interval);
+
+            attendance = (await getAttendance(userId, token)) || [];
+            monthlyAttendance = (await getMonthlyAttendance(userId, token)) || [];
+            console.log("🔄 Frissített jelenlét adatok:", attendance);
+
         } catch (error) {
-            console.error("❌ Hiba a check-out során:", error.message);
+            console.error("❌ Hiba a check-out során:", error);
             message = error.message;
         }
     }
@@ -83,19 +108,32 @@
     <p>{message}</p>
 
     <h2>Napi jelenlét</h2>
-    <ul>
-        {#each attendance as entry}
-            <li>{entry.BelepesIdo} - {entry.KilepesIdo ? entry.KilepesIdo : 'Még dolgozik'}</li>
-        {/each}
-    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>Belépés ideje</th>
+                <th>Kilépés ideje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each attendance as entry}
+                <tr>
+                    <td>{new Date(entry.belepesIdo).toLocaleString()}</td>
+                    <td>{entry.kilepesIdo ? new Date(entry.kilepesIdo).toLocaleString() : 'Még dolgozik'}</td>
+                </tr>
+            {/each}
+        </tbody>
+    </table>
 
-    <button on:click={handleCheckIn}>Elkezdem a munkát</button>
-    <button on:click={handleCheckOut}>Befejezem a munkát </button>
+    <button on:click={handleCheckIn} disabled={isWorking}>Elkezdem a munkát</button>
+    <button on:click={handleCheckOut} disabled={!isWorking}>Befejezem a munkát</button>
 
+    <p>Munkaidő: {Math.floor(elapsedSeconds / 3600)}:{Math.floor((elapsedSeconds % 3600) / 60)}:{elapsedSeconds % 60}</p>
+    
     <h2>Havi jelenlét</h2>
     <ul>
         {#each monthlyAttendance as entry}
-            <li>{entry.Datum}: {entry.LedolgozottIdoPerc} perc</li>
+            <li>{entry.Datum}: {entry.ledolgozottIdoPerc} perc</li>
         {/each}
     </ul>
 

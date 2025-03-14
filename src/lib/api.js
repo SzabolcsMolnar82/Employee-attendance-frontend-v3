@@ -168,12 +168,47 @@ export async function checkOut(dolgozoId, token) {
     return data;
 }
 
-export async function getAttendance(params) {
+export async function getAttendance(dolgozoId, token) {
+    console.log("🔍 getAttendance API hívás dolgozoId:", dolgozoId);
     
+    const response = await fetch(`https://localhost:7032/api/attendance/${dolgozoId}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        console.error("❌ Hiba a getAttendance lekérdezésben:", response.statusText);
+        throw new Error("Nem sikerült lekérni a jelenlét adatokat!");
+    }
+
+    const data = await response.json();
+    console.log("📥 getAttendance API válasz:", data);
+    return data;
 }
 
-export async function getMonthlyAttendance(params) {
+
+export async function getMonthlyAttendance(dolgozoId, token) {
+    console.log("🔍 getMonthlyAttendance API hívás dolgozoId:", dolgozoId);
     
+    const response = await fetch(`https://localhost:7032/api/Attendance/monthly-work/${dolgozoId}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        console.error("❌ Hiba a getMonthlyAttendance lekérdezésben:", response.statusText);
+        throw new Error("Nem sikerült lekérni a havi jelenlét adatokat!");
+    }
+
+    const data = await response.json();
+    console.log("📥 getMonthlyAttendance API válasz:", data);
+    return data;
 }
 
 
