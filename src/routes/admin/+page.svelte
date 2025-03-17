@@ -69,6 +69,14 @@ function handleLogout() {
 
 <main>
     <h1>Admin Felület</h1>
+
+    <h2>Új Dolgozó Hozzáadása</h2>
+    <input type="text" placeholder="Név" bind:value={newEmployee.Nev} required />
+    <input type="text" placeholder="Felhasználónév" bind:value={newEmployee.FelhasznaloNev} required />
+    <input type="password" placeholder="Jelszó" bind:value={newEmployee.Jelszo} required />
+    <button on:click={handleAddEmployee}>Hozzáadás</button>
+
+    <button on:click={handleLogout}>Kijelentkezés</button>
     
 
     <h2>Dolgozók Listája</h2>
@@ -78,11 +86,5 @@ function handleLogout() {
         {/each}
     </ul>
 
-    <h2>Új Dolgozó Hozzáadása</h2>
-    <input type="text" placeholder="Név" bind:value={newEmployee.Nev} required />
-    <input type="text" placeholder="Felhasználónév" bind:value={newEmployee.FelhasznaloNev} required />
-    <input type="password" placeholder="Jelszó" bind:value={newEmployee.Jelszo} required />
-    <button on:click={handleAddEmployee}>Hozzáadás</button>
 
-    <button on:click={handleLogout}>Kijelentkezés</button>
 </main>

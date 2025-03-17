@@ -12,6 +12,7 @@
     let isWorking = false;
     let elapsedSeconds = 0;
     let interval;
+    
 
     onMount(async () => {
         if (typeof window === "undefined") return;
@@ -87,7 +88,7 @@
             const response = await checkOut(userId, token);
             console.log("✅ Check-out API válasz:", response);
 
-            message = response?.Message || "Sikeres kijelentkezés!";
+            message = response?.Message || "Sikeres műszak zárás!";
             isWorking = false;
             clearInterval(interval);
 
@@ -132,10 +133,12 @@
     
     <h2>Havi jelenlét</h2>
     <ul>
-        {#each monthlyAttendance as entry}
-            <li>{entry.Datum}: {entry.ledolgozottIdoPerc} perc</li>
+        {#each monthlyAttendance.days as entry}
+            <li>{entry.datum} - {Math.floor(entry.ledolgozottIdoPerc / 60)} óra {entry.ledolgozottIdoPerc % 60} perc</li>
+           
         {/each}
     </ul>
+    <p>Összes ledolgozott nap: {monthlyAttendance.totalDaysWorked}</p>
 
     <button on:click={logout} style="margin-top: 20px; background-color: grey; color: white;">Kijelentkezés</button>
 </main>

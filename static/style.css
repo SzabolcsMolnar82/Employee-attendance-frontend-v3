@@ -1,0 +1,143 @@
+/* Alap beállítások */
+body {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #f1f1f1;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+h1, h2 {
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+/* Táblázat */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px 16px;
+    text-align: left;
+}
+
+th {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ff8cdb;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transition: background 0.3s ease;
+}
+
+/* Gombok */
+button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #ff4b2b, #ff416c);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border-radius: 25px;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #1e90ff, #ff416c);
+    transform: translateY(-2px);
+}
+
+/* Üzenetek */
+p {
+    margin-top: 1rem;
+    color: #ddd;
+}
+
+/* Dropdown */
+select {
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: #1c1c3c;
+    color: #fff;
+    border: 1px solid #444;
+    outline: none;
+}
+
+select:hover {
+    border-color: #ff8cdb;
+}
+
+/* Lista */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+/* Input mezők */
+input, textarea, select {
+    box-sizing: border-box;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: rgba(28, 28, 60, 0.9);
+    color: #ffffff;
+    border: 1px solid #444;
+    outline: none;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    display: block;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+input::placeholder, textarea::placeholder {
+    color: #aaaaaa;
+}
+
+/* Hover és fókusz effekt */
+input:hover, textarea:hover, select:hover,
+input:focus, textarea:focus, select:focus {
+    border-color: #ff8cdb;
+    background: rgba(28, 28, 60, 1);
+    box-shadow: 0 0 5px #ff8cdb;
+}
+
+/* Label */
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #ff8cdb;
+    font-weight: bold;
+}
+
+/* Extra: kisebb spacing */
+form > * {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+}

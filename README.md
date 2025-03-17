@@ -54,3 +54,8 @@ You can preview the production build with `npm run preview`.
 │── app.html (Alap HTML fájl)
 │── hooks.server.js (Autentikáció ellenőrzése)
 │── hooks.client.js (Token tárolása)
+
+
+
+havi adatokra formázatlan lekérdezés:
+ <li>{entry.datum}: {entry.ledolgozottIdoPerc} perc</li>
