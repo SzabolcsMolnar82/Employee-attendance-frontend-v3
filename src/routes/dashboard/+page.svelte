@@ -12,32 +12,30 @@
     let isWorking = false;
     let elapsedSeconds = 0;
     let interval;
-    
 
-    onMount(async () => {
-        if (typeof window === "undefined") return;
-        authStore.subscribe(({ userId: storedUserId, nev: storedNev, token: authToken }) => {
-            userId = storedUserId ? parseInt(storedUserId) : null; // Átalakítás számmá
-            nev = storedNev;
-            token = authToken;
-            console.log("🔹 Beállított userId:", userId);
-        });
 
-        if (!userId) {
-            console.error("❌ Hiba: userId nem található az authStore-ban!");
-            message = "Hiba: Nem sikerült azonosítani a dolgozót!";
-            return;
+
+
+    $: {
+        const { userId: id, token: t, nev: n } = $authStore;
+        if (id && t) {
+            userId = id;
+            token = t;
+            nev = n;
+            loadAttendanceData(); // <- akkor hívódik meg, amikor már van token és userId
         }
+    }
 
+    async function loadAttendanceData() {
         try {
             attendance = (await getAttendance(userId, token)) || [];
             monthlyAttendance = (await getMonthlyAttendance(userId, token)) || { days: [], totalDaysWorked: 0 };
-            
+            console.log("📆 Havi jelenlét betöltve:", monthlyAttendance);
         } catch (error) {
-            console.error("❌ Hiba az adatok lekérésekor:", error.message);
-            message = "Hiba történt az adatok betöltésekor!";
+            console.error("❌ Hiba az adatok betöltésekor:", error);
+            message = "Hiba történt az adatok lekérésekor!";
         }
-    });
+    }
 
     async function handleCheckIn() {
         if (!userId || isNaN(userId)) {
@@ -50,7 +48,7 @@
             isWorking = true;
             elapsedSeconds = 0;
             interval = setInterval(() => elapsedSeconds++, 1000);
-            attendance = (await getAttendance(userId, token)) || [];
+            await loadAttendanceData();
         } catch (error) {
             message = error.message;
         }
@@ -67,40 +65,25 @@
             return;
         }
 
-        console.log("🔍 Jelenlegi attendance tömb:", attendance);
-
-        if (attendance.length === 0) {
-            console.log("🔄 Attendance üres, újratöltés...");
-            attendance = (await getAttendance(userId, token)) || [];
-            console.log("✅ Újratöltött attendance:", attendance);
-        }
-
         const activeShift = attendance.find(entry => entry && !entry.KilepesIdo);
         
         if (!activeShift) {
             message = "Hiba: Nincs aktív műszak!";
-            console.warn("⚠️ Nincs aktív műszak az attendance tömbben!");
             return;
         }
 
         try {
-            console.log("🔹 Check-out próbálkozás:", userId);
             const response = await checkOut(userId, token);
-            console.log("✅ Check-out API válasz:", response);
-
             message = response?.Message || "Sikeres műszak zárás!";
             isWorking = false;
             clearInterval(interval);
-
-            attendance = (await getAttendance(userId, token)) || [];
-            monthlyAttendance = (await getMonthlyAttendance(userId, token)) || [];
-            console.log("🔄 Frissített jelenlét adatok:", attendance);
-
+            await loadAttendanceData();
         } catch (error) {
-            console.error("❌ Hiba a check-out során:", error);
             message = error.message;
         }
     }
+
+
 </script>
 
 <main>

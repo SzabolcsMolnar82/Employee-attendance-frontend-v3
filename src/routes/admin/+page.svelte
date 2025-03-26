@@ -27,9 +27,9 @@
             window.location.href = "/";
             return;
         }
-    
+
         console.log("Token az admin oldalon:", token); //Ellenőrzés konzolon
-        employees = await getEmployees(token);
+        await loadEmployees();
 
         });
 
@@ -47,6 +47,7 @@
         } catch (error) {
             message = `Hiba: ${error.message}`;
         }
+        await loadEmployees();
     }
 
     //Dolgozók törlése, ADMIN
@@ -57,6 +58,16 @@
     } catch (error) {
         console.error("Törlési hiba:", error);
     }
+    await loadEmployees();
+}
+
+
+
+async function loadEmployees() {
+    const response = await getEmployees(token);
+    employees = response.sort((a, b) =>
+        a.nev.localeCompare(b.nev, 'hu', { sensitivity: 'base' })
+    );
 }
 
 function handleLogout() {
